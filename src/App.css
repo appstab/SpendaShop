@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+.list-group-item {
+  background-color: #282c34;
+}
+
 .main-head {
   grid-area: header;
 }

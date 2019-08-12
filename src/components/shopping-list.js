@@ -25,7 +25,8 @@ class AddNewItemForm extends React.Component {
         });
     }
 
-    handleNewTodoAddition() {
+    handleNewTodoAddition(event) {
+        event.preventDefault();
         if (this.input.value !== '') {
             this.props.addTodo(this.input.value);
             this.setState({
@@ -40,8 +41,9 @@ class AddNewItemForm extends React.Component {
             // ref should be passed a callback
             // with underlying dom element as its
             // argument to get its reference
-            <div id="form">
-                <input className="form-control"
+
+            <form id="form" className="input-group" onSubmit={this.handleNewTodoAddition}>
+                <input type="text" className="form-control"
                     ref={node => {
                         this.input = node;
                     }}
@@ -50,30 +52,21 @@ class AddNewItemForm extends React.Component {
                     autocomplete="off"
                     onChange={this.handleChange}
                 />
-
-                <button
-                    onClick={this.handleNewTodoAddition}
-                >
-                    +
-				</button>
-            </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Add</button>
+                </div>
+            </form>
         );
     }
 }
 
 const Todo = ({ todo, remove }) => {
-    // single todo
     return (
-        <p className="todos">
+        <li className="list-group-item">
             {todo.value}
             <span
-                className="removeBtn"
-                onClick={() => {
-                    remove(todo.id)
-                }}>
-                x
-			</span>
-        </p>
+                onClick={() => { remove(todo.id) }} role="img" aria-label="Remove item from list">❌</span>
+        </li>
     );
 };
 
@@ -87,14 +80,14 @@ const ShoppingList = ({ todos, remove }) => {
             //return (<p>{todo.value}</p>);
         });
     } else {
-        allTodos.push(<h3 id="acu">Nothing to see here. Add items to your list</h3>);
+        allTodos.push(<h3>Nothing to see here. Add items to your list</h3>);
     }
 
     return (
-        <div id="list">
-            <p id="info"> Your Shopping List: </p>
+        <ul class="list-group">
+            {/* <p id="info"> Your Shopping List: </p> */}
             {allTodos}
-        </div>
+        </ul>
     );
 };
 
@@ -180,7 +173,7 @@ class EditShoppingList extends React.Component {
 
     render() {
         return (
-            <div id="container">
+            <div className="container">
                 <Title />
                 <AddNewItemForm addTodo={this.addTodo} />
                 <ShoppingList todos={this.state.data} remove={this.removeTodo} />
