@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import EditShoppingList from "./components/shopping-list"
 import Home from "./components/home"
 import './App.css';
+import hamburgerMenuPage from './components/hamburgerMenu';
 
 
 function App() {
@@ -11,7 +12,6 @@ function App() {
     <Router>
       <div className="app-wrapper">
         <Header></Header>
-
         <main className="content">
           <Route exact path="/" component={Home} />
           <Route path="/new" component={EditShoppingList} />

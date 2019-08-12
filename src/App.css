@@ -7,6 +7,7 @@
 
 .main-head {
   grid-area: header;
+  background-color: cadetblue;
 }
 .content {
   grid-area: content;
@@ -21,7 +22,7 @@
 
 .app-wrapper {
   display: grid;
-  grid-gap: 5px;
+  grid-gap: 0px;
   grid-template-rows: auto 1fr auto;
   grid-template-areas:
     "header"
