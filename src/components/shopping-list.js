@@ -4,7 +4,7 @@ import React from 'react';
 const Title = () => {
     return (
         <div id="titleWrapper">
-            <h2 className="text-center">Grocerie List</h2>
+            <h2 className="text-center">Shopping List</h2>
         </div>
     );
 };
