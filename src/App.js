@@ -1,24 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
+import Header from './components/header';
 import './App.css';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Welcome to SpendaShop.
-        </p>
-        <a
-          className="App-link"
-          href="https://googgle.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn About us
-        </a>
-      </header>
+
+    <div className="app-wrapper">
+      <Header></Header>
+
+      <main className="content">
+        <button>New List</button>
+      </main>
+
+      <footer className="main-footer mb-1">Made with ❤ by "The guys who Shop"</footer>
     </div>
   );
 }
