@@ -1,11 +1,14 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import logo from '../SpendaWhale.svg';
 
 function Header() {
     return (
         <>
             <header className="main-head d-flex justify-content-between align-items-center">
-                <img src={logo} className="app-logo ml-1" alt="logo" />
+                <Link to="/">
+                    <img src={logo} className="app-logo ml-1" alt="logo" />
+                </Link>
                 <h1>Spenda Shop</h1>
 
                 <nav className="main-nav">
