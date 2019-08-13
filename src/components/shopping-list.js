@@ -16,7 +16,7 @@ class AddNewItemForm extends React.Component {
         this.state = {
             value: '',
             isLoading: false,
-            options: ["Milk", "Eggs", "Bread", "Pasta", "Rise", "Cheese"],
+            options: ["Milk", "Eggs", "Bread", "Pasta", "Rice", "Cheese"],
             selected: ""
         };
         this.handleChange = this.handleChange.bind(this);
@@ -86,7 +86,7 @@ const ShoppingList = ({ todos, remove }) => {
             //return (<p>{todo.value}</p>);
         });
     } else {
-        allTodos.push(<h3>Nothing to see here. Add items to your list</h3>);
+        allTodos.push(<p>Nothing to see here. Add items to your list</p>);
     }
 
     return (
