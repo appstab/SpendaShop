@@ -18,7 +18,7 @@ class RetailerPrices extends React.Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {r.items.map(item => <tr key={item.id}><td>$ {item.price}</td></tr>)}
+                                {r.items.map(item => <tr key={item.id}><td>{item.name} $ {item.price}</td></tr>)}
                             </tbody>
                             <tfoot>
                                 <tr>
