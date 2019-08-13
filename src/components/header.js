@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 import logo from '../SpendaWhale.svg';
-import {HamburgerMenu} from "react-hamburger-menu";
 
 function Header() {
     let user = "Alex"
@@ -12,7 +11,7 @@ function Header() {
                     <img src={logo} className="app-logo ml-1" alt="logo" />
                 </Link>
                 <h1>Spenda Shop</h1>
-                <div>👨🏽‍💼<span>Hi {user} </span></div>
+                <div><span role="img" aria-label="user-emoji">👨🏽‍💼</span>Hi {user}</div>
                 <nav className="main-nav">
                     {/* <ul>
                         <li><button type="button">Nav 1</button></li>

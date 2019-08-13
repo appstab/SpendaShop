@@ -49,11 +49,11 @@ class AddNewItemForm extends React.Component {
                     }}
                     value={this.state.value}
                     placeholder="Add an item to your list..."
-                    autocomplete="off"
+                    autoComplete="off"
                     onChange={this.handleChange}
                 />
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="button-addon2">Add</button>
+                <div className="input-group-append">
+                    <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Add</button>
                 </div>
             </form>
         );
@@ -74,9 +74,9 @@ const ShoppingList = ({ todos, remove }) => {
     let allTodos = [];
 
     if (todos.length > 0) {
-        allTodos = todos.map(todo => {
+        allTodos = todos.map((todo, index) => {
             // passing todo and remove method reference
-            return (<Todo todo={todo} remove={remove} />);
+            return (<Todo key={index} todo={todo} remove={remove} />);
             //return (<p>{todo.value}</p>);
         });
     } else {
@@ -84,7 +84,7 @@ const ShoppingList = ({ todos, remove }) => {
     }
 
     return (
-        <ul class="list-group">
+        <ul className="list-group">
             {/* <p id="info"> Your Shopping List: </p> */}
             {allTodos}
         </ul>
@@ -92,10 +92,10 @@ const ShoppingList = ({ todos, remove }) => {
 };
 
 class EditShoppingList extends React.Component {
+
     constructor(props) {
         super(props);
-        // data for introduction to app
-        // for new users
+
         const introData = [];
 
         const localData = localStorage.todos && JSON.parse(localStorage.todos);
@@ -155,6 +155,14 @@ class EditShoppingList extends React.Component {
     }
 
     componentDidMount() {
+
+        this.props.firestore.collection("items").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(`${doc.id} => ${doc.data()}`);
+                console.log(doc.data());
+            });
+        });
+
         localStorage.clear();
         if (typeof (Storage) !== "undefined") {
             if (!localStorage.todos) {
