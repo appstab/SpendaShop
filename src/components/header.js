@@ -15,7 +15,7 @@ class Header extends React.Component {
                     <Link to="/">
                         <img src={logo} className="app-logo ml-3" alt="logo" />
                     </Link>
-                    <h1>Spenda Shop</h1>
+                    <h1 className="title">Spenda Shop</h1>
                     {/* <div><span role="img" aria-label="user-emoji">👨🏽‍💼</span>Hi {user}</div> */}
                     <nav className="main-nav">
                         {/* <ul>
@@ -23,7 +23,7 @@ class Header extends React.Component {
                         {!this.props.user && <button className="btn btn-sm btn-outline-light mr-3" onClick={this.props.login}>Log In</button>}
 
                         {this.props.user && <div>
-                            <img src={this.props.user.photoURL} style={{ width: '50px' }} alt="user" className="rounded-circle mr-3" />
+                            <img src={this.props.user.photoURL} alt="user" className="rounded-circle mr-3 avatar" />
                             <span>{this.props.user.displayName}</span>
                             <button className="btn btn-sm btn-outline-light mx-3" onClick={this.props.logout}>Log Out</button>
                         </div>}
