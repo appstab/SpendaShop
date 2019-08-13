@@ -8,7 +8,7 @@ function Header() {
         <>
             <header className="main-head d-flex justify-content-between align-items-center">
                 <Link to="/">
-                    <img src={logo} className="app-logo ml-1" alt="logo" />
+                    <img src={logo} className="app-logo ml-3" alt="logo" />
                 </Link>
                 <h1>Spenda Shop</h1>
                 <div><span role="img" aria-label="user-emoji">👨🏽‍💼</span>Hi {user}</div>

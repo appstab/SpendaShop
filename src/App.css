@@ -38,3 +38,6 @@
   height: 75px;
   width: 75px;
 }
+.rbt.clearfix.open {
+  display: inline-block;
+}

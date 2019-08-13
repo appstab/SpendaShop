@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { Typeahead } from 'react-bootstrap-typeahead';
+import RetailerPrices from "./retailer-prices"
 // stateless component
 const Title = () => {
     return (
@@ -13,7 +14,10 @@ class AddNewItemForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: ''
+            value: '',
+            isLoading: false,
+            options: ["Milk", "Eggs", "Bread", "Pasta", "Rise", "Cheese"],
+            selected: ""
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleNewTodoAddition = this.handleNewTodoAddition.bind(this);
@@ -27,35 +31,37 @@ class AddNewItemForm extends React.Component {
 
     handleNewTodoAddition(event) {
         event.preventDefault();
-        if (this.input.value !== '') {
-            this.props.addTodo(this.input.value);
+        if (this.state.selected !== '') {
+            const itemName = this.state.selected;
             this.setState({
-                value: ''
-            });
-            this.input.placeholder = "Add an item to your list...";
+                selected: ""
+            }, () => this.props.addTodo(itemName));
         }
     }
 
     render() {
         return (
-            // ref should be passed a callback
-            // with underlying dom element as its
-            // argument to get its reference
-
-            <form id="form" className="input-group" onSubmit={this.handleNewTodoAddition}>
-                <input type="text" className="form-control"
-                    ref={node => {
-                        this.input = node;
+            // <div id="form" className="input-group">
+            <>
+                <Typeahead
+                    onChange={(selected) => {
+                        if (selected !== '') {
+                            // let s = this.state.selected;
+                            // s.push(selected)
+                            this.setState({ selected });
+                        }
                     }}
-                    value={this.state.value}
-                    placeholder="Add an item to your list..."
-                    autoComplete="off"
-                    onChange={this.handleChange}
-                />
-                <div className="input-group-append">
-                    <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Add</button>
-                </div>
-            </form>
+                    options={this.state.options}
+                    selected={this.state.selected}
+                    ref={(ref) => this._typeahead = ref} />
+                <button className="btn btn-outline-secondary mb-1 ml-1"
+                    type="button"
+                    onClick={(event) => {
+                        this.handleNewTodoAddition(event);
+                        this._typeahead.clear()
+                    }}>Add</button>
+            </>
+            // </div>
         );
     }
 }
@@ -84,7 +90,7 @@ const ShoppingList = ({ todos, remove }) => {
     }
 
     return (
-        <ul className="list-group">
+        <ul className="list-group mt-4">
             {/* <p id="info"> Your Shopping List: </p> */}
             {allTodos}
         </ul>
@@ -101,7 +107,8 @@ class EditShoppingList extends React.Component {
         const localData = localStorage.todos && JSON.parse(localStorage.todos);
 
         this.state = {
-            data: localData || introData
+            data: localData || introData,
+            retailerPrices: []
         };
 
         // binding methods
@@ -113,6 +120,7 @@ class EditShoppingList extends React.Component {
         if (typeof (Storage) !== "undefined")
             localStorage.todos = JSON.stringify(this.state.data);
     }
+
     // Handler to add todo
     addTodo(val) {
         let id;
@@ -125,19 +133,58 @@ class EditShoppingList extends React.Component {
             id = window.id++;
         }
 
-        const todo = {
+        let todo = {
             value: val,
             id: id
         };
 
-        this.state.data.push(todo);
-        // update state
-        this.setState({
-            data: this.state.data
-        }, () => {
-            // update localStorage
-            this.updateLocalStorage();
-        });
+        // Get prices from retailers catalogue in firebase
+        let retailerPrices = []
+        this.props.firestore.collection("retailers")
+            .get()
+            .then((querySnapshot) => {
+                querySnapshot.forEach((doc) => {
+                    // doc.data() is never undefined for query doc snapshot
+                    let retailer = doc.data();
+                    const item = retailer.catalogue.filter(i => i.name === val[0].toLowerCase());
+
+                    let retailerPrice = this.state.retailerPrices.find(rp => rp.name === retailer.name);
+
+                    if (!retailerPrice) {
+                        retailerPrice = {
+                            name: retailer.name,
+                            items: []
+                        }
+                    }
+
+                    if (item && item.length) {
+                        // console.log(item);
+                        retailerPrice.items.push({ id: id, name: val[0], price: item[0].price });
+                        // todo.prices.push(item[0].price);
+                    } else {
+                        retailerPrice.items.push({})
+                    }
+
+                    console.log("retailerPrice", retailerPrice);
+                    retailerPrices.push(retailerPrice)
+
+
+                });
+                console.log("Retailer Prices", retailerPrices);
+
+                this.state.data.push(todo);
+                // update state
+                this.setState({
+                    data: this.state.data,
+                    retailerPrices: retailerPrices
+                }, () => {
+                    // update localStorage
+                    this.updateLocalStorage();
+                });
+            })
+            .catch(function (error) {
+                console.log("Error getting documents: ", error);
+            });
     }
     // Handler to remove todo
     removeTodo(id) {
@@ -145,9 +192,18 @@ class EditShoppingList extends React.Component {
         const list = this.state.data.filter(todo => {
             return todo.id !== id;
         });
+
+        let retailerPrices = this.state.retailerPrices;
+
+        retailerPrices.forEach(rp => {
+            let filteredItems = rp.items.filter(rpItem => rpItem.id !== id);
+            rp.items = filteredItems;
+        })
+
         // update state
         this.setState({
-            data: list
+            data: list,
+            retailerPrices
         }, () => {
             // update localStorage
             this.updateLocalStorage();
@@ -155,13 +211,6 @@ class EditShoppingList extends React.Component {
     }
 
     componentDidMount() {
-
-        this.props.firestore.collection("items").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                console.log(`${doc.id} => ${doc.data()}`);
-                console.log(doc.data());
-            });
-        });
 
         localStorage.clear();
         if (typeof (Storage) !== "undefined") {
@@ -183,8 +232,15 @@ class EditShoppingList extends React.Component {
         return (
             <div className="container">
                 <Title />
-                <AddNewItemForm addTodo={this.addTodo} />
-                <ShoppingList todos={this.state.data} remove={this.removeTodo} />
+                <div className="row">
+                    <div className="col-sm-4">
+                        <AddNewItemForm addTodo={this.addTodo} />
+                        <ShoppingList todos={this.state.data} remove={this.removeTodo} />
+                    </div>
+                    <div className="col-sm-8">
+                        <RetailerPrices retailers={this.state.retailerPrices}></RetailerPrices>
+                    </div>
+                </div>
             </div>
         );
     }
